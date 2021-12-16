@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <%- include('../partials/head.ejs' ); %>
+        <title>Tabla de productos</title>
+</head>
+
+<body>
+    <div class="container">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Producto</th>
+                    <th scope="col">Precio</th>
+                    <th scope="col">Foto</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% productos.forEach((p)=>{ %>
+                    <tr>
+                        <td>
+                            <%= p.nombre %>
+                        </td>
+                        <td>
+                            <%= p.precio %>
+                        </td>
+                        <td>
+                            <img class="img-fluid" alt="imagen-comida" src=<%=p.foto %>>
+                        </td>
+                    </tr>
+                    <%}); %>
+            </tbody>
+        </table>
+    </div>
+    <script src="/js/products.js"></script>
+</body>
+
+</html>
