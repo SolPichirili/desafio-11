@@ -31,8 +31,6 @@ passport.use('login', new LocalStrategy((username, password, done) => {
 passport.use('register', new LocalStrategy({ passReqToCallback: true },
     (req, username, password, done) => {
         User.findOne({ email: username }, (err, user) => {
-            console.log(user);
-
             if (err) {
                 console.log(`Error ${err}`);
                 return done(err);
@@ -46,7 +44,7 @@ passport.use('register', new LocalStrategy({ passReqToCallback: true },
             const newUser = {
                 username: username,
                 password: createHash(password),
-                email: req.body.email
+                email: req.body.username
             }
 
             User.create(newUser, (err, userCreated) => {
@@ -84,7 +82,7 @@ authRouter.get('/failLogin', (req, res) => {
 });
 
 authRouter.get('/logOut', (req, res) => {
-    const email = req.body.email;
+    const email = req.user.email;
     req.session.destroy(err =>{
         if(!err){
             res.render('../views/pages/logOut.ejs', { email });

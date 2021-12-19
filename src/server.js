@@ -28,8 +28,9 @@ server.use(session({
     secret: 'secret',
     resave: true,
     saveUninitialized: false,
+    rolling: true,
     cookie: {
-        maxAge: 60000
+        maxAge: 600000
     }
 }));
 
@@ -56,7 +57,7 @@ io.on('connection', async (socket) => {
 
 server.get('/', authMiddleware, (req, res) => {
     res.render('../views/pages/index.ejs', {
-        email: req.body.email
+        email: req.user.email
     });
 });
 
