@@ -7,7 +7,11 @@ const fakerProducts = require('../public/js/products');
 const authRouter = require('./routers/auth');
 
 const { getMessages, saveMessages } = require('./models/messages');
-const { authMiddleware } = require('./middlewares/auth')
+const { authMiddleware } = require('./middlewares/auth');
+
+const passport = require('passport');
+const mongoose = require('mongoose');
+const MongoStore = require('connect-mongo');
 
 const server = express();
 const httpServer = new HttpServer(server);
@@ -20,6 +24,7 @@ server.use(express.static('public'));
 server.set('view engine', 'ejs');
 
 server.use(session({
+    store: MongoStore.create({ mongoUrl: 'mongodb://localhost:27017/ecommerce' }),
     secret: 'secret',
     resave: true,
     saveUninitialized: false,
@@ -27,6 +32,9 @@ server.use(session({
         maxAge: 60000
     }
 }));
+
+server.use(passport.initialize());
+server.use(passport.session())
 
 server.use(authRouter);
 
@@ -48,7 +56,7 @@ io.on('connection', async (socket) => {
 
 server.get('/', authMiddleware, (req, res) => {
     res.render('../views/pages/index.ejs', {
-        nombre: req.session.nombre
+        email: req.body.email
     });
 });
 
@@ -58,6 +66,13 @@ server.get('/api/productos-test', (req, res) => {
         productos: products
     });
 });
+
+mongoose.connect('mongodb://localhost:27017/ecommerce',
+    { useNewUrlParser: true, useUnifiedTopology: true }, err => {
+        if (err) {
+            console.error('Error Mongo');
+        }
+    });
 
 const app = httpServer.listen(port, () => {
     console.log(`Servidor corriendo en ${port}`);

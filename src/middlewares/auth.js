@@ -1,5 +1,5 @@
 const authMiddleware = (req, res, next) =>{
-    if(req.session?.nombre){
+    if(req.isAuthenticated()){
         next()
     } else {
         res.redirect('/login');
